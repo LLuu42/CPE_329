@@ -1,0 +1,22 @@
+#include "msp432.h"
+#include "Lcd.h"
+
+void display_LED_char()
+{
+    key =
+    case
+}
+
+
+void main(void)
+{
+
+    WDTCTL = WDTPW | WDTHOLD;           // Stop watchdog timer
+    P4->DIR |= (RS | RW | E | DB3 | DB2 | DB1 | DB0);  //initialization
+
+    //start the startup sequence
+    startup();
+
+    write_hello_world();
+
+}

@@ -1,0 +1,22 @@
+/*
+ * main.c
+ * Author: Lara Luu
+ * Created on: Oct 2, 2017
+ * Maps a 3x4 keyboard to a LED on the MSP432
+ */
+
+
+#include "msp.h"
+#include "Keypad.h"
+
+int main(void) {
+    unsigned char key;
+
+    keypad_init();
+    LED_init();
+
+    while(1) {
+        key = keypad_getkey();  /* read the keypad */
+        LED_set(key);           /* set LEDs according to the key code */
+    }
+}

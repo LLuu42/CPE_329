@@ -1,0 +1,137 @@
+//*****************************************************************************
+//
+// MSP432 main.c template - Empty main
+//
+//****************************************************************************
+
+#include "msp.h"
+
+#define RS BIT7
+#define RW BIT6
+#define E BIT5
+#define DB3 BIT3 // D7
+#define DB2 BIT2 // D6
+#define DB1 BIT1 //D5
+#define DB0 BIT0 // D4
+
+
+void delayMs(int n) {
+    int i, j;
+
+    for (j = 0; j < n; j++)
+        for (i = 250; i > 0; i--);      /* Delay */
+}
+
+//sends two nibbles (high and low)
+void set_function(int CMD)
+{
+    //high nibble
+    P4-> OUT &= ~(RS + RW + E + DB3 + DB2 + DB1 + DB0);
+    delayMs(3);
+    P4 -> OUT |= E; // sets enable to high (before doing anything)
+    P4 -> OUT |= ((CMD >>4) & 0x0F); // shifts to low nibble, masks everything else to zero
+    delayMs(3);
+    P4-> OUT &= ~E; //turns off E to be safe
+    delayMs(3);
+
+    P4-> OUT &= ~(RS + RW + E + DB3 + DB2 + DB1 + DB0);
+    delayMs(3);
+    P4 -> OUT |= E; // sets enable to high (before doing anything)
+    P4 -> OUT |= ((CMD >>4) & 0x0F); // shifts to low nibble, masks everything else to zero
+    delayMs(3);
+    P4-> OUT &= ~E; //turns off E to be safe
+    delayMs(3);
+
+
+
+    // low nibble
+    P4-> OUT &= ~(RS + RW + E + DB3 + DB2 + DB1 + DB0);
+    delayMs(3);
+    P4-> OUT |= E;
+    P4-> OUT |= CMD & (DB3 + DB2 + DB1 + DB0);
+    delayMs(3);
+    P4-> OUT & ~E;
+    delayMs(3);
+}
+
+
+//one high, one low
+//clear display and on/off
+void send_command(int CMD)
+{
+    //high nibble
+    P4-> OUT &= ~(RS + RW + E + DB3 + DB2 + DB1 + DB0);
+    delay();
+    P4 -> OUT |= E; // sets enable to high (before doing anything)
+    P4 -> OUT |= ((CMD >>4) & 0x0F); // shifts to low nibble, masks everything else to zero
+    delay();
+    P4-> OUT &= ~E; //turns off E to be safe
+    delay();
+
+    // low nibble
+    P4-> OUT &= ~(RS + RW + E + DB3 + DB2 + DB1 + DB0);
+    delay();
+    P4-> OUT |= E;
+    P4-> OUT |= CMD & (DB3 + DB2 + DB1 + DB0);
+    delay();
+    P4-> OUT & ~E;
+    delay();
+
+}
+
+void write_data(int CMD)
+{
+    //high nibble
+    P4-> OUT &= ~(RS + RW + E + DB3 + DB2 + DB1 + DB0);
+    delay();
+    P4 -> OUT |= E; // sets enable to high (before doing anything)
+    P4 -> OUT |= RS; // Datasheet wants RS to be high
+    P4 -> OUT |= ((CMD >>4) & 0x0F); // shifts to low nibble, masks everything else to zero
+    delay();
+    P4-> OUT &= ~E; //turns off E to be safe
+    delay();
+
+    // low nibble
+    P4-> OUT &= ~(RS + RW + E + DB3 + DB2 + DB1 + DB0);
+    delay();
+    P4-> OUT |= E;
+    P4 -> OUT |= RS; // Datasheet wants RS to be high
+    P4-> OUT |= CMD & (DB3 + DB2 + DB1 + DB0);
+    delay();
+    P4-> OUT & ~E;
+    delay();
+}
+
+
+void main(void)
+{
+	
+    WDTCTL = WDTPW | WDTHOLD;           // Stop watchdog timer
+
+    P4->DIR |= RS|RW|E|DB3|DB2|DB1|DB0;         /* make P4 pins output for data */
+
+
+    set_function(0x28); //func set
+
+    send_command(0x0C); //clear
+
+    send_command(0x01); //display
+
+
+    //write a letter
+    send_command(0x85);
+
+    write_data(0x34);
+
+    //write another letter
+    send_command(0x86);
+
+
+    write_data(0x41);
+
+
+
+
+}
+
+

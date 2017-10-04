@@ -1,0 +1,52 @@
+#include "msp432.h"
+#include "Lcd.h"
+
+void main(void)
+{
+
+    WDTCTL = WDTPW | WDTHOLD;           // Stop watchdog timer
+    P4->DIR |= (RS | RW | E | DB3 | DB2 | DB1 | DB0);  //initialization
+
+    //start the startup sequence
+    startup();
+
+    //displays 'H'
+    display_char(0x81, 0x48);
+    display_char(0x82, 0x45);
+    display_char(0x83, 0x4C);
+    display_char(0x84, 0x4F);
+    display_char(0x85, 0x2C);
+    display_char(0x86, 0x48);
+    display_char(0x87, 0x57);
+    display_char(0x88, 0x57);
+
+
+    //displays 'R'
+    send_command(0x89); //This sends the letter to address 0x09
+    delay_ms(0.037);
+    write_char_LCD(0x52);       //This displays the letter ‘R’
+    delay_ms(1);
+
+    //displays 'L'
+    send_command(0x8A); //This sends the letter to address 0x0A
+
+    delay_ms(0.037);
+    write_char_LCD(0x4C);   //This displays the letter ‘L’
+    delay_ms(1);
+
+    //displays 'D'
+    send_command(0x8B); //This sends the letter to address 0x0B
+    delay_ms(0.037);
+    write_char_LCD(0x44);       ////This displays the letter ‘D’
+    delay_ms(1);
+
+    //displays '!'
+    send_command(0x8C); //This sends the letter to address 0x0C
+    delay_ms(0.037);
+    write_char_LCD(0x21);       //This displays ‘!’
+    delay_ms(1);
+
+
+    //displays '->'
+    scroll_cursor();
+}

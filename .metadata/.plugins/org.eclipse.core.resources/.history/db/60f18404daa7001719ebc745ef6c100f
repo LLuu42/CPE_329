@@ -1,0 +1,22 @@
+/*
+ * Keypad.h
+ *
+ *  Created on: Oct 2, 2017
+ *      Author: lara
+ */
+
+
+#ifndef KEYPAD_H_
+#define KEYPAD_H_
+
+#include "msp.h"
+
+void delay(void);
+void keypad_init(void);
+char keypad_getkey(void);
+void LED_init(void);
+void LED_set(int value);
+
+#define key_pin P5
+
+#endif /* KEYPAD_H_ */

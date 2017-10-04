@@ -1,0 +1,27 @@
+#include "msp432.h"
+#include "Lcd.h"
+
+void main(void)
+{
+
+    WDTCTL = WDTPW | WDTHOLD;           // Stop watchdog timer
+    P4->DIR |= (RS | RW | E | DB3 | DB2 | DB1 | DB0);  //initialization
+
+    //start the startup sequence
+    startup();
+
+    display_char(0x81, 0x48); // H
+    display_char(0x82, 0x45); // E
+    display_char(0x83, 0x4C); // L
+    display_char(0x84, 0x4C); // L
+    display_char(0x85, 0x4F); // O
+    display_char(0x86, 0x2C); // ,
+    display_char(0x87, 0x57); // W
+    display_char(0x88, 0x4F); // O
+    display_char(0x89, 0x52); // R
+    display_char(0x8A, 0x4C); // L
+    display_char(0x8B, 0x44); // D
+    display_char(0x8C, 0x21); // !
+
+    scroll_cursor();
+}

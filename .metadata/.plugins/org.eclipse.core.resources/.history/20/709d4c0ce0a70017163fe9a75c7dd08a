@@ -1,0 +1,109 @@
+#include "msp432.h"
+#include "lcd.h"
+
+void main(void)
+{
+
+    WDTCTL = WDTPW | WDTHOLD;           // Stop watchdog timer
+    P4->DIR |= (RS | RW | E | DB3 | DB2 | DB1 | DB0);  //initialization
+
+    //start the startup sequence
+    delay_ms(20);
+    send_fs_cmd(function_set);
+    delay_ms(0.037);
+    send_command(display_set);
+    delay_ms(0.037);
+    send_command(display_clear);
+    delay_ms(1.60);
+
+    //displays 'H'
+    send_command(0x81);         //This sends the letter to address 0x01
+    delay_ms(0.037);
+    write_char_LCD(0x48);   //This displays the letter H
+    delay_ms(1);
+
+    //displays 'E'
+    send_command(0x82);         //This sends the letter to address 0x02
+    delay_ms(0.037);
+    write_char_LCD(0x45);   //This displays the letter E
+    delay_ms(1);
+
+    //displays 'L'
+    send_command(0x83);         //This sends the letter to address 0x03
+    delay_ms(0.037);
+    write_char_LCD(0x4C);   //This displays the letter L
+    delay_ms(1);
+
+    //displays 'L'
+    send_command(0x84);         //This sends the letter to address 0x04
+    delay_ms(0.037);
+    write_char_LCD(0x4C);   //This displays the letter L
+    delay_ms(1);
+
+    //displays 'O'
+    send_command(0x85);         //This sends the letter to address 0x05
+    delay_ms(0.037);
+    write_char_LCD(0x4F);        //This displays the letter O
+    delay_ms(1);
+
+    //displays ','
+    send_command(0x86);         //This sends the letter to address 0x06
+    delay_ms(0.037);
+    write_char_LCD(0x2C);   //This displays a comma
+    delay_ms(1);
+
+    //displays 'W'
+    send_command(0x87); //This sends the letter to address 0x07
+    delay_ms(0.037);
+    write_char_LCD(0x57);       //This displays the letter W
+    delay_ms(1);
+
+    //displays 'O'
+    send_command(0x88); //This sends the letter to address 0x08
+    delay_ms(0.037);
+    write_char_LCD(0x4F);       //This displays the letter ‘O’
+    delay_ms(1);
+
+    //displays 'R'
+    send_command(0x89); //This sends the letter to address 0x09
+    delay_ms(0.037);
+    write_char_LCD(0x52);       //This displays the letter ‘R’
+    delay_ms(1);
+
+    //displays 'L'
+    send_command(0x8A); //This sends the letter to address 0x0A
+
+    delay_ms(0.037);
+    write_char_LCD(0x4C);   //This displays the letter ‘L’
+    delay_ms(1);
+
+    //displays 'D'
+    send_command(0x8B); //This sends the letter to address 0x0B
+    delay_ms(0.037);
+    write_char_LCD(0x44);       ////This displays the letter ‘D’
+    delay_ms(1);
+
+    //displays '!'
+    send_command(0x8C); //This sends the letter to address 0x0C
+    delay_ms(0.037);
+    write_char_LCD(0x21);       //This displays ‘!’
+    delay_ms(1);
+
+
+    //displays '->'
+    int h = 0xC1;
+    do {
+        h++;
+        send_command(cursor_shift);
+        send_command(h);
+        delay_ms(0.037);
+        write_char_LCD(0x7E);
+        delay_ms(50);
+
+        send_command(h);
+        delay_ms(0.037);
+        write_char_LCD(0xFE);
+        delay_ms(1);
+
+    } while(h != 0xCF);
+}

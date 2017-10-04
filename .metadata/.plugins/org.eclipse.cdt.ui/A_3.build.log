@@ -1,0 +1,17 @@
+
+**** Build of configuration Debug for project A_3 ****
+
+/home/lara/ti/ccsv7/utils/bin/gmake -k -j 4 all -O 
+Building file: ../main.c
+Invoking: ARM Compiler
+"/home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/bin/armcl" -mv4 --code_state=32 --include_path="/home/lara/CPE329/A_3" --include_path="/home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include" -g --diag_warning=225 --diag_wrap=off --display_error_number --preproc_with_compile --preproc_dependency="main.d"  "../main.c"
+
+>> Compilation failure
+subdir_rules.mk:7: recipe for target 'main.obj' failed
+"../main.c", line 7: fatal error #1965: cannot open source file "msp.h"
+1 catastrophic error detected in the compilation of "../main.c".
+Compilation terminated.
+gmake: *** [main.obj] Error 1
+gmake: Target 'all' not remade because of errors.
+
+**** Build Finished ****
