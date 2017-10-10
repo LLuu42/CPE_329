@@ -1,4 +1,171 @@
 #include "LCD.h"
+#include "Keypad.h"
+
+/*
+ * Displays "Hello World" on the board
+ */
+void write_hello_world()
+{
+    send_command(display_clear);
+    delay_ms(5);
+
+    display_char(0x81, 0x48); // H
+    display_char(0x82, 0x45); // E
+    display_char(0x83, 0x4C); // L
+    display_char(0x84, 0x4C); // L
+    display_char(0x85, 0x4F); // O
+    display_char(0x86, 0x2C); // ,
+    display_char(0x87, 0x57); // W
+    display_char(0x88, 0x4F); // O
+    display_char(0x89, 0x52); // R
+    display_char(0x8A, 0x4C); // L
+    display_char(0x8B, 0x44); // D
+    display_char(0x8C, 0x21); // !
+}
+
+/*
+ * Displays "Locked" on the board
+ */
+void write_locked_enter_key()
+{
+    send_command(display_clear);
+    delay_ms(10);
+
+    display_char(0x81, 0x4C); // L
+    display_char(0x82, 0x4F); // O
+    display_char(0x83, 0x43); // C
+    display_char(0x84, 0x4B); // K
+    display_char(0x85, 0x45); // E
+    display_char(0x86, 0x44); // D
+
+    display_char(0xC1, 0x45); // E
+    display_char(0xC2, 0x4E); // N
+    display_char(0xC3, 0x54); // T
+    display_char(0xC4, 0x45); // E
+    display_char(0xC5, 0x52); // R
+
+    display_char(0xC7, 0x4B); // K
+    display_char(0xC8, 0x45); // E
+    display_char(0xC9, 0x59); // Y
+    display_char(0xCA, 0x3A); // :
+}
+
+/*
+ * Displays "Enter Key" on the board
+ */
+void write_incorrect(int wrong_attempts)
+{
+    send_command(display_clear);
+    delay_ms(5);
+
+    display_char(0x81, 0x54); // T
+    display_char(0x82, 0x52); // R
+    display_char(0x83, 0x49); // I
+    display_char(0x84, 0x45); // E
+    display_char(0x85, 0x53); // S
+
+    display_char(0xC1, 0x52); // R
+    display_char(0xC2, 0x45); // E
+    display_char(0xC3, 0x4D); // M
+    display_char(0xC4, 0x41); // A
+    display_char(0xC5, 0x49); // I
+    display_char(0xC6, 0x4E); // N
+    display_char(0xC7, 0x47); // G
+    display_char(0xC8, 0x3A); // :
+
+    switch(wrong_attempts)
+    {
+        case 3:
+            display_char(0xCA, 0x33); // 3
+            break;
+        case 2:
+            display_char(0xCA, 0x32); // 2
+            break;
+        case 1:
+            display_char(0xCA, 0x31); // 1
+            break;
+    }
+
+    if(wrong_attempts <= 0)
+    {
+        write_locked_out();
+    }
+
+}
+
+void write_locked_out()
+{
+    send_command(display_clear);
+    delay_ms(5);
+
+    display_char(0x81, 0x4C); // L
+    display_char(0x82, 0x4F); // O
+    display_char(0x83, 0x43); // C
+    display_char(0x84, 0x4B); // K
+    display_char(0x85, 0x45); // E
+    display_char(0x86, 0x44); // D
+
+    display_char(0x88, 0x4F); // O
+    display_char(0x89, 0x55); // U
+    display_char(0x8A, 0x54); // T
+
+    display_char(0xC1, 0x29); // )
+    display_char(0xC2, 0x3A); // :
+    display_char(0xC3, 0x3C); // )
+
+
+    int res = 5;
+    while(res >= 5)
+    {
+        if(keypad_getkey() > 11)
+        {
+            res--;
+            delay_ms(1000);
+        }
+    }
+
+    write_unlocked();
+}
+
+void write_unlocked()
+{
+    send_command(display_clear);
+    delay_ms(5);
+
+    display_char(0x81, 0x55); // U
+    display_char(0x82, 0x4E); // N
+    display_char(0x83, 0x4C); // L
+    display_char(0x84, 0x4F); // O
+    display_char(0x85, 0x43); // C
+    display_char(0x86, 0x4B); // K
+    display_char(0x87, 0x45); // E
+    display_char(0x88, 0x44); // D
+
+    display_char(0x8A, 0x3A); // :
+    display_char(0x8B, 0x44); // D
+}
+
+/*
+ * Displays a character at specified address and character
+ */
+void display_char(int addr, int c)
+{
+    send_command(addr);
+    delay_ms(0.037);
+    write_char_LCD(c);
+    delay_ms(1);
+}
+
+void startup()
+{
+    delay_ms(20);
+    send_fs_cmd(function_set);
+    delay_ms(0.037);
+    send_command(display_set);
+    delay_ms(0.037);
+    send_command(display_clear);
+    delay_ms(1.60);
+}
 
 void send_fs_cmd(int cmd){
     write_upper_nibble(cmd);
@@ -30,22 +197,6 @@ void write_char_LCD(int c){
     P4->OUT |= (c & 0x0F);                          //lower nibble
     delay_ms(0.001);
     P4->OUT &= ~E;                                           //drop E
-}
-
-void write_hello_world()
-{
-    display_char(0x81, 0x48); // H
-    display_char(0x82, 0x45); // E
-    display_char(0x83, 0x4C); // L
-    display_char(0x84, 0x4C); // L
-    display_char(0x85, 0x4F); // O
-    display_char(0x86, 0x2C); // ,
-    display_char(0x87, 0x57); // W
-    display_char(0x88, 0x4F); // O
-    display_char(0x89, 0x52); // R
-    display_char(0x8A, 0x4C); // L
-    display_char(0x8B, 0x44); // D
-    display_char(0x8C, 0x21); // !
 }
 
 
@@ -94,24 +245,5 @@ void scroll_cursor()
         delay_ms(1);
 
     } while(h != 0xCF);
-}
-
-void display_char(int addr, int c)
-{
-    send_command(addr);         //This sends the letter to address 0x01
-    delay_ms(0.037);
-    write_char_LCD(c);   //This displays the letter H
-    delay_ms(1);
-}
-
-void startup()
-{
-    delay_ms(20);
-    send_fs_cmd(function_set);
-    delay_ms(0.037);
-    send_command(display_set);
-    delay_ms(0.037);
-    send_command(display_clear);
-    delay_ms(1.60);
 }
 

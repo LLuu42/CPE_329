@@ -15,6 +15,10 @@ main.obj: /home/lara/ti/ccsv7/ccs_base/arm/include/system_msp432p401r.h
 main.obj: ../Keypad.h
 main.obj: ../LCD.h
 main.obj: /home/lara/ti/ccsv7/ccs_base/arm/include/msp432.h
+main.obj: /home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include/stdio.h
+main.obj: /home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include/linkage.h
+main.obj: /home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include/stdarg.h
+main.obj: /home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include/string.h
 
 ../main.c: 
 /home/lara/ti/ccsv7/ccs_base/arm/include/msp.h: 
@@ -31,3 +35,7 @@ main.obj: /home/lara/ti/ccsv7/ccs_base/arm/include/msp432.h
 ../Keypad.h: 
 ../LCD.h: 
 /home/lara/ti/ccsv7/ccs_base/arm/include/msp432.h: 
+/home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include/stdio.h: 
+/home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include/linkage.h: 
+/home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include/stdarg.h: 
+/home/lara/ti/ccsv7/tools/compiler/ti-cgt-arm_16.9.1.LTS/include/string.h: 

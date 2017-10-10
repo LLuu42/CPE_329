@@ -13,6 +13,8 @@ LCD.obj: /home/lara/ti/ccsv7/ccs_base/arm/include/CMSIS/core_cmInstr.h
 LCD.obj: /home/lara/ti/ccsv7/ccs_base/arm/include/CMSIS/core_cmFunc.h
 LCD.obj: /home/lara/ti/ccsv7/ccs_base/arm/include/CMSIS/core_cmSimd.h
 LCD.obj: /home/lara/ti/ccsv7/ccs_base/arm/include/system_msp432p401r.h
+LCD.obj: ../Keypad.h
+LCD.obj: /home/lara/ti/ccsv7/ccs_base/arm/include/msp.h
 
 ../LCD.c: 
 ../LCD.h: 
@@ -27,3 +29,5 @@ LCD.obj: /home/lara/ti/ccsv7/ccs_base/arm/include/system_msp432p401r.h
 /home/lara/ti/ccsv7/ccs_base/arm/include/CMSIS/core_cmFunc.h: 
 /home/lara/ti/ccsv7/ccs_base/arm/include/CMSIS/core_cmSimd.h: 
 /home/lara/ti/ccsv7/ccs_base/arm/include/system_msp432p401r.h: 
+../Keypad.h: 
+/home/lara/ti/ccsv7/ccs_base/arm/include/msp.h: 

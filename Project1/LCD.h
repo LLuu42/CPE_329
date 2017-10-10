@@ -30,5 +30,9 @@ void scroll_cursor();
 void startup();
 
 void write_hello_world();
+void write_locked_enter_key();
+void write_incorrect(int wrong_attempts);
+void write_locked_out();
+void write_unlocked();
 
 #endif /* LCD_H_ */
