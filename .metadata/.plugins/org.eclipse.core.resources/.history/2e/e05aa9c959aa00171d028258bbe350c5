@@ -1,0 +1,878 @@
+/*
+ * main.c
+ * Author: Lara Luu
+ * Created on: Oct 2, 2017
+ * Maps a 3x4 keyboard to an LCD screen on the MSP432
+ */
+
+
+#include "msp.h"
+#include "Keypad.h"
+#include "LCD.h"
+#include <stdio.h>
+
+void get_password(int* input);
+void set_key();
+void check_password();
+void display_keypad(int addr, unsigned char key);
+
+/*
+void reset(int *curPos ,int *resFlag, int password[4])//Reset to factory settings
+{
+    *resFlag = 0;
+    send_command(display_clear);
+    delay_ms(5);
+    write_locked_enter_key(); // Display lock screen
+    delay_ms(5);
+    *curPos = 0;
+    password[0] = 0;
+    password[1] = 0;
+    password[2] = 0;
+    password[3] = 0;
+}
+
+
+
+int checkPassword(int password[]){
+Code to check verify password against header file
+    int pw[4] = {1, 2, 3, 4};
+    int i = 0;
+    int check = 0;
+
+    for (i=0; i<4; i++){
+        if (pw[i] != password[i])
+            check = 1;
+    }
+    return check;
+}
+
+int main(void)
+{
+
+    int password[4] = {0, 0, 0, 0}; // init tried password
+    int reset = 0;
+    int cursor = 0;
+
+
+    P4->DIR |= (RS | RW | E | DB3 | DB2 | DB1 | DB0);  //initialization
+
+    //start the startup sequence
+    startup();
+    delay_ms(5);
+
+    write_locked_enter_key(); // Display lock screen
+    delay_ms(5);
+    keypad_init();
+    LED_init();
+
+    unsigned char key;
+    while(1)
+    {
+        if(reset)
+        {
+            while(key == 0)
+            {
+                delay_ms(50);
+                key = keypad_getkey();
+            }
+            if(key == 10)
+            {
+                reset = 0;
+                send_command(display_clear);
+                delay_ms(500);
+                write_locked_enter_key(); // Display lock screen
+                delay_ms(500);
+                cursor = 0;
+                password[0] = 0;
+                password[1] = 0;
+                password[2] = 0;
+                password[3] = 0;
+            }
+            key = 0;
+        }
+        else
+        {
+            if(cursor >= 4 && 0 == checkPassword(password))
+            {
+                write_hello_world();
+                reset = 1;
+            }
+
+            else if(cursor == 4){  Extra Functionality for printing incorrect message
+                //printIncorrectMessage();
+                display_char(0x81, 0x21); // !
+
+                reset = 0;
+                send_command(display_clear);
+                delay_ms(500);
+                write_locked_enter_key(); // Display lock screen
+                delay_ms(500);
+                cursor = 0;
+                password[0] = 0;
+                password[1] = 0;
+                password[2] = 0;
+                password[3] = 0;
+            }
+            else{
+            while(key == 0){       /*Get current keypress
+               delay_ms(50);
+               key = keypad_getkey();
+            }
+            delay_ms(100);
+            if(key == 10) { //reset
+                reset = 1;
+            }
+            else
+            {
+                LED_set(key);           /* set LEDs according to the key code
+                display_keypad(0xCA, key);
+                key = 0;
+                cursor++;
+            }
+        }
+    }
+    }
+    //get_password(input);
+
+
+}
+
+
+void get_password(int* input)
+{
+
+}
+
+void set_key(int* key)
+{
+    key[0] = 1;
+    key[1] = 9;
+    key[2] = 9;
+    key[3] = 6;
+}
+
+void check_password()
+{
+
+}
+
+
+void display_keypad(int addr, unsigned char key)
+{
+
+        switch(key){
+            case 1: //1
+                display_char(addr, 0x31);
+                break;
+            case 2: //2
+                display_char(addr, 0x32);
+                break;
+            case 3: //3
+                display_char(addr, 0x33);
+                break;
+            case 4: //4
+                display_char(addr, 0x34);
+                break;
+            case 5: //5
+                display_char(addr, 0x35);
+                break;
+            case 6: //6
+                display_char(addr, 0x36);
+                break;
+            case 7: //7
+                display_char(addr, 0x37);
+                break;
+            case 8: //8
+                display_char(addr, 0x38);
+                break;
+            case 9: //9
+                display_char(addr, 0x39);
+                break;
+            case 10: //*
+                display_char(addr, 0x2A);
+                break;
+            case 11: //0
+                display_char(addr, 0x30);
+                break;
+            case 12: //#
+                display_char(addr, 0x23);
+                break;
+        }
+
+}
+*/
+
+
+int main(void) {
+
+    //int keypressed[1];
+    //char buffer[0]="2";
+    //char buffer[1]="0";
+
+
+    unsigned char key;
+
+    WDTCTL = WDTPW | WDTHOLD;           // Stop watchdog timer
+    P4->DIR |= (RS | RW | E | DB3 | DB2 | DB1 | DB0);  //initialization
+
+    keypad_init();
+    LED_init();
+
+    //start the startup sequence
+    delay_ms(20);
+    send_fs_cmd(function_set);
+    delay_ms(0.037);
+    send_command(display_set);
+    delay_ms(0.037);
+    send_command(display_clear);
+    delay_ms(1.60);
+
+    send_command(cursor_shift);
+
+    send_command(0x83);
+    delay_ms(0.037);
+    write_char_LCD(0x4C);       //displays 'L'
+    delay_ms(1);
+
+    send_command(0x84);
+    delay_ms(0.037);
+    write_char_LCD(0x4F);       //displays 'O'
+    delay_ms(1);
+
+    send_command(0x85);
+    delay_ms(0.037);
+    write_char_LCD(0x43);       //displays 'C'
+    delay_ms(1);
+
+    send_command(0x86);
+    delay_ms(0.037);
+    write_char_LCD(0x4B);       //displays 'K'
+    delay_ms(1);
+
+    send_command(0x87);
+    delay_ms(0.037);
+    write_char_LCD(0x45);       //displays 'E'
+    delay_ms(1);
+
+    send_command(0x88);
+    delay_ms(0.037);
+    write_char_LCD(0x44);       //displays 'D'
+    delay_ms(1);
+
+    send_command(0xC0);
+    delay_ms(0.037);
+    write_char_LCD(0x45);       //displays 'E'
+    delay_ms(1);
+
+    send_command(0xC1);
+    delay_ms(0.037);
+    write_char_LCD(0x4E);       //displays 'N'
+    delay_ms(1);
+
+    send_command(0xC2);
+    delay_ms(0.037);
+    write_char_LCD(0x54);       //displays 'T'
+    delay_ms(1);
+
+    send_command(0xC3);
+    delay_ms(0.037);
+    write_char_LCD(0x45);       //displays 'E'
+    delay_ms(1);
+
+    send_command(0xC4);
+    delay_ms(0.037);
+    write_char_LCD(0x52);       //displays 'R'
+    delay_ms(1);
+
+    send_command(0xC5);
+    delay_ms(0.037);
+    write_char_LCD(0x10);       //displays ' '
+    delay_ms(1);
+
+    send_command(0xC6);
+    delay_ms(0.037);
+    write_char_LCD(0x4B);       //displays 'K'
+    delay_ms(1);
+
+    send_command(0xC7);
+    delay_ms(0.037);
+    write_char_LCD(0x45);       //displays 'E'
+    delay_ms(1);
+
+    send_command(0xC8);
+    delay_ms(0.037);
+    write_char_LCD(0x59);       //displays 'Y'
+    delay_ms(1);
+
+    send_command(0xC9);
+    delay_ms(0.037);
+    write_char_LCD(0x3A);       //displays ':'
+    delay_ms(1);
+
+
+        int ct = 0;
+       //int digits = 0;
+
+    while(1) {
+        key = keypad_getkey();  /* read the keypad */
+        LED_set(key);           /* set LEDs according to the key code */
+
+
+
+            if(key != 0){
+                if(ct < 4) {
+                    ct++;
+                   int ADDR = 0xC9 + ct;
+
+                    //writes the number pressed to the LCD display
+                    switch(key) {
+                    case 1:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 2:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 3:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 4:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 5:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 6:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 7:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 8:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 9:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 11:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+                    break;
+
+                    case 12:
+                        delay_ms(50);
+                        send_command(ADDR);
+                        delay_ms(0.037);
+                        write_char_LCD(0x2A);       //displays '*'
+                        delay_ms(50);
+
+
+
+
+
+                        break;
+                    }
+
+                 if(key != 2) {
+                     delay_ms(10);
+                     send_command(display_clear);
+                     delay_ms(10);
+
+                     //displays 'H'
+                     send_command(0x81);
+                     delay_ms(0.037);
+                     write_char_LCD(0x48);
+                     delay_ms(1); }
+
+                  else {
+                     while (1) {
+                         key = keypad_getkey();  /* read the keypad */
+                         if (key == 11) {
+                             delay_ms(10);
+                             send_command(display_clear);
+                             delay_ms(10);
+
+                             send_command(0x82);
+                             delay_ms(0.037);
+                             write_char_LCD(0x44);
+                             delay_ms(1);
+                             delay_ms(10);
+
+                             send_command(0x84);
+                             delay_ms(0.037);
+                             write_char_LCD(0x41);
+                             delay_ms(10);
+                         }
+                         else if(key >0)
+                         {
+                             delay_ms(10);
+                             send_command(display_clear);
+                             delay_ms(10);
+
+                             //displays 'H'
+                             send_command(0x81);
+                             delay_ms(0.037);
+                             write_char_LCD(0x48);
+                             delay_ms(1);
+                             while(1);
+                         }
+
+                         }
+
+
+                             /*        if (key = 1) {
+                                         //displays 'H'
+                                                                    send_command(0x81);
+                                                                    delay_ms(0.037);
+                                                                    write_char_LCD(0x48);
+                                                                    delay_ms(1);
+
+                                                                    //displays 'E'
+                                                                    send_command(0x82);
+                                                                    delay_ms(0.037);
+                                                                    write_char_LCD(0x45);
+                                                                    delay_ms(1);
+
+                                                                    //displays 'L'
+                                                                    send_command(0x83);
+                                                                    delay_ms(0.037);
+                                                                    write_char_LCD(0x4C);
+                                                                    delay_ms(1);
+
+                                                                    //displays 'L'
+                                                                    send_command(0x84);
+                                                                    delay_ms(0.037);
+                                                                    write_char_LCD(0x4C);
+                                                                    delay_ms(1);
+                                                                    */
+                                     }
+                                     }
+                }
+            }
+
+                 }
+
+
+                         /*else {
+                             delay_ms(10);
+                                                          send_command(display_clear);
+                                                          delay_ms(10);
+
+                                                          //displays 'H'
+                                                                                      send_command(0x81);
+                                                                                      delay_ms(0.037);
+                                                                                      write_char_LCD(0x48);
+                                                                                      delay_ms(1);
+
+                                                                                      //displays 'E'
+                                                                                      send_command(0x82);
+                                                                                      delay_ms(0.037);
+                                                                                      write_char_LCD(0x45);
+                                                                                      delay_ms(1);
+                                                                                      //displays 'L'
+                                                                                      send_command(0x83);
+                                                                                      delay_ms(0.037);
+                                                                                      write_char_LCD(0x4C);
+                                                                                      delay_ms(1);
+
+                                                                                      //displays 'L'
+                                                                                      send_command(0x84);
+                                                                                      delay_ms(0.037);
+                                                                                      write_char_LCD(0x4C);
+                                                                                      delay_ms(1);
+
+                         }
+                 }
+                }
+            }
+    }
+}
+
+                             /*else {
+                             delay_ms(50);
+                             send_command(display_clear);
+                             delay_ms(10);
+
+
+                             //displays 'H'
+                             send_command(0x81);
+                             delay_ms(0.037);
+                             write_char_LCD(0x48);
+                             delay_ms(1);
+
+                             //displays 'E'
+                             send_command(0x82);
+                             delay_ms(0.037);
+                             write_char_LCD(0x45);
+                             delay_ms(1);
+
+                             //displays 'L'
+                             send_command(0x83);
+                             delay_ms(0.037);
+                             write_char_LCD(0x4C);
+                             delay_ms(1);
+
+                             //displays 'L'
+                             send_command(0x84);
+                             delay_ms(0.037);
+                             write_char_LCD(0x4C);
+                             delay_ms(1);
+
+                             //displays 'O'
+                             send_command(0x85);
+                             delay_ms(0.037);
+                             write_char_LCD(0x4F);
+                             delay_ms(1);
+
+                             //displays ','
+                             send_command(0x86);
+                             delay_ms(0.037);
+                             write_char_LCD(0x2C);
+                             delay_ms(1);
+
+                             //displays 'W'
+                             send_command(0x87);
+                             delay_ms(0.037);
+                             write_char_LCD(0x57);
+                             delay_ms(1);
+
+                             //displays 'O'
+                             send_command(0x88);
+                             delay_ms(0.037);
+                             write_char_LCD(0x4F);
+                             delay_ms(1);
+
+                             //displays 'R'
+                             send_command(0x89);
+                             delay_ms(0.037);
+                             write_char_LCD(0x52);
+                             delay_ms(1);
+
+                             //displays 'L'
+                             send_command(0x8A);
+                             delay_ms(0.037);
+                             write_char_LCD(0x4C);
+                             delay_ms(1);
+
+                             //displays 'D'
+                             send_command(0x8B);
+                             delay_ms(0.037);
+                             write_char_LCD(0x44);
+                             delay_ms(1);
+
+                             //displays '!'
+                             send_command(0x8C);
+                             delay_ms(0.037);
+                             write_char_LCD(0x21);
+                             delay_ms(1);
+
+                             }
+                         }
+                 }
+
+
+                }
+
+                    }
+
+
+                }
+
+
+                   /* while(digits < 2){
+                        if(key == 1){
+                            keypressed[digits] = '1';
+                        }
+                        else if (key == 2){
+                            keypressed[digits] = '2';
+                        }
+                        else if (key == 3){
+                            keypressed[digits] = '3';
+                        }
+                        else if (key == 4){
+                            keypressed[digits] = '4';
+                        }
+                        else if (key == 5){
+                            keypressed[digits] = '5';
+                        }
+                        else if (key == 6){
+                            keypressed[digits] = '6';
+                        }
+                        else if (key == 7){
+                            keypressed[digits] = '7';
+                        }
+                        else if (key == 8){
+                            keypressed[digits] = '8';
+                        }
+                        else if (key == 9){
+                            keypressed[digits] = '9';
+                        }
+                        else if (key == 11){
+                            keypressed[digits] = '0';
+                        }
+                        else if (key == 12){
+                            keypressed[digits] = '#';
+                        }
+                        digits++;
+
+                    }*/
+
+
+
+/*
+                int i;
+                int is_equal=1;
+
+                for(i = 0; i < 2; i++){
+                    if(buffer[i] != keypressed[1]) {
+                        is_equal = 0;
+                    }
+
+                }
+          if(is_equal == 1){
+                                       delay_ms(50);
+                                                                           send_command(display_clear);
+                                                                           delay_ms(10);
+
+
+                                                                           //displays 'H'
+                                                                           send_command(0x81);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x48);
+                                                                           delay_ms(1);
+
+                                                                           //displays 'E'
+                                                                           send_command(0x82);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x45);
+                                                                           delay_ms(1);
+
+                                                                           //displays 'L'
+                                                                           send_command(0x83);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x4C);
+                                                                           delay_ms(1);
+
+                                                                           //displays 'L'
+                                                                           send_command(0x84);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x4C);
+                                                                           delay_ms(1);
+
+                                                                           //displays 'O'
+                                                                           send_command(0x85);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x4F);
+                                                                           delay_ms(1);
+
+                                                                           //displays ','
+                                                                           send_command(0x86);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x2C);
+                                                                           delay_ms(1);
+
+                                                                           //displays 'W'
+                                                                           send_command(0x87);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x57);
+                                                                           delay_ms(1);
+
+                                                                           //displays 'O'
+                                                                           send_command(0x88);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x4F);
+                                                                           delay_ms(1);
+
+                                                                           //displays 'R'
+                                                                           send_command(0x89);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x52);
+                                                                           delay_ms(1);
+
+                                                                           //displays 'L'
+                                                                           send_command(0x8A);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x4C);
+                                                                           delay_ms(1);
+
+                                                                           //displays 'D'
+                                                                           send_command(0x8B);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x44);
+                                                                           delay_ms(1);
+
+                                                                           //displays '!'
+                                                                           send_command(0x8C);
+                                                                           delay_ms(0.037);
+                                                                           write_char_LCD(0x21);
+                                                                           delay_ms(1);
+                                   }
+          else {
+              delay_ms(50);
+                                      send_command(display_clear);
+                                      delay_ms(10);
+
+                                      //displays 'H'
+                                      send_command(0x81);
+                                      delay_ms(0.037);
+                                      write_char_LCD(0x48);
+                                      delay_ms(1);
+          }
+
+
+
+
+
+
+                }
+
+
+                /*if(key == 2) {
+                    //delay_ms(1);
+                    if(key == 0) {
+                        //delay_ms(1);
+                       if(key ==pin[2]) {
+                            //delay_ms(1);
+                                if(key == pin[3]){
+                                    delay_ms(50);
+                                    send_command(display_clear);
+                                    delay_ms(10);
+
+
+                                    //displays 'H'
+                                    send_command(0x81);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x48);
+                                    delay_ms(1);
+
+                                    //displays 'E'
+                                    send_command(0x82);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x45);
+                                    delay_ms(1);
+
+                                    //displays 'L'
+                                    send_command(0x83);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x4C);
+                                    delay_ms(1);
+
+                                    //displays 'L'
+                                    send_command(0x84);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x4C);
+                                    delay_ms(1);
+
+                                    //displays 'O'
+                                    send_command(0x85);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x4F);
+                                    delay_ms(1);
+
+                                    //displays ','
+                                    send_command(0x86);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x2C);
+                                    delay_ms(1);
+
+                                    //displays 'W'
+                                    send_command(0x87);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x57);
+                                    delay_ms(1);
+
+                                    //displays 'O'
+                                    send_command(0x88);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x4F);
+                                    delay_ms(1);
+
+                                    //displays 'R'
+                                    send_command(0x89);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x52);
+                                    delay_ms(1);
+
+                                    //displays 'L'
+                                    send_command(0x8A);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x4C);
+                                    delay_ms(1);
+
+                                    //displays 'D'
+                                    send_command(0x8B);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x44);
+                                    delay_ms(1);
+
+                                    //displays '!'
+                                    send_command(0x8C);
+                                    delay_ms(0.037);
+                                    write_char_LCD(0x21);
+                                    delay_ms(1);
+                                //}
+                        //}
+                    }
+                }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
